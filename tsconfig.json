@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "declaration": true,
+    "outDir": "./dist",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "allowJs": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "jianmu": [
+        "./src/index.ts"
+      ],
+      "jianmu/api": [
+        "./src/api.ts"
+      ],
+    }
+  },
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
