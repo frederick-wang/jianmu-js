@@ -6,4 +6,4 @@ A node.js package for Jianmu Framework, includeing API calls and CLI tools.
 
 Jianmu is a simple desktop app development framework combining Python, Vue.js, Element Plus and Electron.
 
-View Jianmu Framework on PyPI: https://pypi.org/project/Jianmu/
+View Jianmu Framework on PyPI: <https://pypi.org/project/Jianmu/>
