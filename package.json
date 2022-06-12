@@ -32,7 +32,7 @@
     "Vue",
     "Electron"
   ],
-  "author": "Zhaoji Wang",
+  "author": "Zhaoji Wang <hwoam@outlook.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/frederick-wang/node-jianmu/issues"
