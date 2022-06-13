@@ -17,8 +17,8 @@ const api = {
   reload: () => ipcRenderer.send('reload'),
   forceReload: () => ipcRenderer.send('force-reload'),
   quit: () => ipcRenderer.send('quit'),
-  invokePython: <T = any>(method: string, ...args: any[]) =>
-    ipcRenderer.invoke('invoke-python', method, ...args) as Promise<
+  requestPython: <T = any>(method: string, ...args: any[]) =>
+    ipcRenderer.invoke('request-python', method, ...args) as Promise<
       PythonResponse<T>
     >,
   showOpenDialog: (options: OpenDialogOptions) =>

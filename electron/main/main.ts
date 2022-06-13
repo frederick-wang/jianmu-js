@@ -89,7 +89,7 @@ ipcMain.on('quit', () => {
   app.quit()
 })
 
-ipcMain.handle('invoke-python', async (_, method: string, ...args: any[]) => {
+ipcMain.handle('request-python', async (_, method: string, ...args: any[]) => {
   if (!method) {
     throw new Error('No method provided')
   }
