@@ -21,9 +21,12 @@
       "jianmu": [
         "./src/index.ts"
       ],
-      "jianmu/api": [
-        "./src/api.ts"
+      "renderer/*": [
+        "./electron/renderer/*"
       ],
+      "main/*": [
+        "./electron/main/*"
+      ]
     }
   },
   "exclude": [

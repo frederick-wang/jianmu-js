@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig-preset-ui.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "jianmu": [
+        "../../src/index.ts"
+      ],
+      "renderer/*": [
+        "./*"
+      ],
+      "main/*": [
+        "../main/*"
+      ]
+    },
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.d.ts",
+    "./**/*.tsx",
+    "./**/*.vue"
+  ]
+}
