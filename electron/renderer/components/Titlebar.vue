@@ -10,7 +10,7 @@ const { minimize, toggleMaximize, close, isMaximized } = api
     <div class="titlebar-container">
       <div class="titlebar-drag-region"></div>
       <div class="window-appicon">
-        <fa icon="tree" />
+        <img src="/appicon.png" style="height: 20px" />
       </div>
       <Menubar />
       <div class="window-title">Jianmu</div>
