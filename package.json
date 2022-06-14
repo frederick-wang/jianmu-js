@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/frederick-wang/node-jianmu.git"
+    "url": "git+https://github.com/frederick-wang/jianmu-js.git"
   },
   "keywords": [
     "Jianmu",
@@ -42,9 +42,9 @@
   "author": "Zhaoji Wang <hwoam@outlook.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/frederick-wang/node-jianmu/issues"
+    "url": "https://github.com/frederick-wang/jianmu-js/issues"
   },
-  "homepage": "https://github.com/frederick-wang/node-jianmu#readme",
+  "homepage": "https://github.com/frederick-wang/jianmu-js#readme",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
