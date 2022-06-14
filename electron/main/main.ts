@@ -4,7 +4,9 @@ import {
   ipcMain,
   Menu,
   OpenDialogOptions,
-  SaveDialogOptions
+  OpenExternalOptions,
+  SaveDialogOptions,
+  shell
 } from 'electron'
 import { join } from 'path'
 import got from 'got'
@@ -121,3 +123,9 @@ ipcMain.handle('show-save-dialog', (_, options: SaveDialogOptions) => {
     return dialog.showSaveDialog(mainWindow, options)
   }
 })
+
+ipcMain.handle(
+  'open-external',
+  (_, url: string, options?: OpenExternalOptions) =>
+    shell.openExternal(url, options)
+)

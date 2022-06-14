@@ -23,6 +23,7 @@ function createWindow() {
         width: 1024,
         height: 768,
         frame: false,
+        icon: (0, path_1.join)(__dirname, 'static/icon.png'),
         webPreferences: {
             preload: (0, path_1.join)(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -81,7 +82,7 @@ electron_1.ipcMain.on('force-reload', () => {
 electron_1.ipcMain.on('quit', () => {
     electron_1.app.quit();
 });
-electron_1.ipcMain.handle('invoke-python', (_, method, ...args) => __awaiter(void 0, void 0, void 0, function* () {
+electron_1.ipcMain.handle('request-python', (_, method, ...args) => __awaiter(void 0, void 0, void 0, function* () {
     if (!method) {
         throw new Error('No method provided');
     }
@@ -112,3 +113,4 @@ electron_1.ipcMain.handle('show-save-dialog', (_, options) => {
         return electron_2.dialog.showSaveDialog(mainWindow, options);
     }
 });
+electron_1.ipcMain.handle('open-external', (_, url, options) => electron_1.shell.openExternal(url, options));

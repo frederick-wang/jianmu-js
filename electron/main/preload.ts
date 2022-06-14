@@ -3,6 +3,7 @@ import {
   ipcRenderer,
   OpenDialogOptions,
   OpenDialogReturnValue,
+  OpenExternalOptions,
   SaveDialogOptions,
   SaveDialogReturnValue
 } from 'electron'
@@ -30,7 +31,9 @@ const api = {
     ipcRenderer.invoke(
       'show-save-dialog',
       options
-    ) as Promise<SaveDialogReturnValue>
+    ) as Promise<SaveDialogReturnValue>,
+  openExternal: (url: string, options?: OpenExternalOptions) =>
+    ipcRenderer.invoke('open-external', url, options) as Promise<void>
 }
 
 contextBridge.exposeInMainWorld('api', api)

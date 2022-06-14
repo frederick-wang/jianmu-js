@@ -2,7 +2,14 @@
 import hotkeys from 'hotkeys-js'
 import { api } from 'jianmu'
 
-const { isMenuActive, forceReload, openDevtools, reload, quit } = api
+const {
+  isMenuActive,
+  forceReload,
+  toggleDevtools,
+  reload,
+  quit,
+  openExternal
+} = api
 
 hotkeys('Ctrl+W, Command+W', (e) => {
   e.preventDefault()
@@ -10,7 +17,11 @@ hotkeys('Ctrl+W, Command+W', (e) => {
 })
 hotkeys('Ctrl+Shift+R, Command+Shift+R', forceReload)
 hotkeys('Ctrl+R, Command+R', reload)
-hotkeys('Ctrl+Shift+I, Command+Shift+I', openDevtools)
+hotkeys('Ctrl+Shift+I, Command+Shift+I', toggleDevtools)
+
+const openPyPIWebsite = () => {
+  openExternal('https://pypi.org/project/jianmu/')
+}
 </script>
 
 <template>
@@ -22,20 +33,33 @@ hotkeys('Ctrl+Shift+I, Command+Shift+I', openDevtools)
           <div class="action-label">退出</div>
           <div class="keybinding">Ctrl+W</div>
         </a>
-        <a class="action-item">
-          <div class="action-label">测试</div>
-          <div class="keybinding"></div>
+      </div>
+    </div>
+    <div class="menubar-menu-button">
+      <div class="menubar-menu-title">查看(V)</div>
+      <div class="action-bar" :class="{ active: isMenuActive }">
+        <a class="action-item" @click="reload()">
+          <div class="action-label">刷新</div>
+          <div class="keybinding">Ctrl+R</div>
+        </a>
+        <a class="action-item" @click="forceReload()">
+          <div class="action-label">强制刷新</div>
+          <div class="keybinding">Ctrl+Shift+R</div>
+        </a>
+        <a class="action-item" @click="toggleDevtools()">
+          <div class="action-label">开发者工具</div>
+          <div class="keybinding">Ctrl+Shift+I</div>
         </a>
       </div>
     </div>
     <div class="menubar-menu-button">
       <div class="menubar-menu-title">帮助(H)</div>
       <div class="action-bar" :class="{ active: isMenuActive }">
-        <a class="action-item">
+        <a class="action-item" @click="openPyPIWebsite()">
           <div class="action-label">帮助文档</div>
           <div class="keybinding"></div>
         </a>
-        <a class="action-item">
+        <a class="action-item" @click="openPyPIWebsite()">
           <div class="action-label">关于</div>
           <div class="keybinding"></div>
         </a>
@@ -94,6 +118,7 @@ hotkeys('Ctrl+Shift+I, Command+Shift+I', openDevtools)
         position: relative;
         text-decoration: none;
         margin: 2px 0;
+        justify-content: space-between;
 
         &:hover {
           background-color: rgb(0, 96, 192);

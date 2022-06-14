@@ -11,9 +11,10 @@ const api = {
     reload: () => electron_1.ipcRenderer.send('reload'),
     forceReload: () => electron_1.ipcRenderer.send('force-reload'),
     quit: () => electron_1.ipcRenderer.send('quit'),
-    invokePython: (method, ...args) => electron_1.ipcRenderer.invoke('invoke-python', method, ...args),
+    requestPython: (method, ...args) => electron_1.ipcRenderer.invoke('request-python', method, ...args),
     showOpenDialog: (options) => electron_1.ipcRenderer.invoke('show-open-dialog', options),
-    showSaveDialog: (options) => electron_1.ipcRenderer.invoke('show-save-dialog', options)
+    showSaveDialog: (options) => electron_1.ipcRenderer.invoke('show-save-dialog', options),
+    openExternal: (url, options) => electron_1.ipcRenderer.invoke('open-external', url, options)
 };
 exports.api = api;
 electron_1.contextBridge.exposeInMainWorld('api', api);
