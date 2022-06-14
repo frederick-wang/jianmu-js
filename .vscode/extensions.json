@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "vue.volar",
+    "wayou.vscode-todo-highlight",
+    "ms-python.python",
+    "njpwerner.autodocstring",
+    "visualstudioexptteam.vscodeintellicode",
+    "kevinrose.vsc-python-indent",
+    "aaron-bond.better-comments",
+    "bierner.color-info"
+  ],
+  "unwantedRecommendations": [
+    "octref.vetur",
+    "hookyqr.beautify",
+    "dbaeumer.jshint",
+    "ms-vscode.vscode-typescript-tslint-plugin"
+  ]
+}
