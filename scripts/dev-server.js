@@ -6,14 +6,12 @@ const Electron = require('electron')
 
 const buildRenderer = require('./build-renderer')
 const getRendererServer = require('./get-renderer-server')
-
-const compileTs = require('./private/tsc')
+const buildMain = require('./build-main')
 const {
   splitOutputData,
   printBanner,
   emptyTempDir,
-  copyElectronMainFiles,
-  copyElectronMainStaticFiles
+  copyElectronMainFiles
 } = require('./private/tools')
 
 let viteServer = null
@@ -107,15 +105,14 @@ function restartFlask() {
   }
 }
 
-async function startElectron() {
+async function startElectron(copyStaticFiles = true) {
   if (electronProcess) {
     // single instance lock
     return
   }
 
   try {
-    const electronScriptsDir = Path.resolve(__dirname, '..', 'electron', 'main')
-    await compileTs(electronScriptsDir)
+    await buildMain(copyStaticFiles)
   } catch (e) {
     console.log(
       Chalk.redBright(
@@ -175,7 +172,7 @@ function restartElectron() {
 
   if (!electronProcessLocker) {
     electronProcessLocker = true
-    startElectron()
+    startElectron(false)
   }
 }
 
@@ -262,7 +259,6 @@ async function start(_pythonPath, _jianmuPath, _projectPath, _isDev) {
   }
 
   // 编译 Electron Main 进程文件，并启动 Electron
-  copyElectronMainStaticFiles()
   startElectron()
 
   // 如果是 development 模式，侦听文件变化并重启 Electron
