@@ -1,6 +1,5 @@
 declare namespace NodeJS {
   interface ProcessEnv {
-    NODE_ENV: string
-    DEBUGGING: string
+    NODE_ENV?: string
   }
 }

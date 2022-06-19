@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import Window from 'project/Window.vue'
+const App = (await import('project/App.vue')).default
 </script>
 
 <template>
-  <div class="window-container">
+  <div class="app-container">
     <el-scrollbar>
       <Suspense>
-        <Window />
+        <App />
       </Suspense>
     </el-scrollbar>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.window-container {
+<style lang="scss">
+.app-container {
   flex: 1;
   font-size: 14px;
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',

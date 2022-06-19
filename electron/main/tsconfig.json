@@ -5,7 +5,7 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "../../.jianmu/electron/main",
+    "outDir": "../../.jianmu/electron",
     "allowJs": true
   }
 }

@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import Titlebar from 'renderer/components/Titlebar.vue'
-import WindowContainer from 'renderer/components/WindowContainer.vue'
+import AppContainer from 'renderer/components/AppContainer.vue'
 </script>
 
 <template>
-  <div class="main-view">
+  <div class="jianmu-main-view">
     <Titlebar />
-    <WindowContainer />
+    <Suspense>
+      <AppContainer />
+    </Suspense>
   </div>
 </template>
 
 <style lang="scss">
 @import './global.scss';
 
-.main-view {
+.jianmu-main-view {
   display: flex;
   flex-direction: column;
   height: 100%;

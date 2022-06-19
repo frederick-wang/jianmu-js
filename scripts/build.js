@@ -1,35 +1,35 @@
-const Path = require('path')
-const Chalk = require('chalk')
-const FileSystem = require('fs')
-const compileTs = require('./private/tsc')
+// const Path = require('path')
+// const Chalk = require('chalk')
+// const FileSystem = require('fs')
+// const compileTs = require('./private/tsc')
 
-function buildRenderer() {
-  const Vite = require('vite')
-  const viteConfig = require(Path.join(__dirname, '..', 'config', 'vite.js'))
+// function buildRenderer() {
+//   const Vite = require('vite')
+//   const viteConfig = require(Path.join(__dirname, '..', 'config', 'vite.js'))
 
-  return Vite.build({
-    ...viteConfig,
-    base: './',
-    mode: 'production'
-  })
-}
+//   return Vite.build({
+//     ...viteConfig,
+//     base: './',
+//     mode: 'production'
+//   })
+// }
 
-function buildMain() {
-  const mainPath = Path.join(__dirname, 'electron')
-  return compileTs(mainPath)
-}
+// function buildMain() {
+//   const mainPath = Path.join(__dirname, 'electron')
+//   return compileTs(mainPath)
+// }
 
-FileSystem.rmSync(Path.join(__dirname, '..', '.jianmu'), {
-  recursive: true,
-  force: true
-})
+// FileSystem.rmSync(Path.join(__dirname, '..', '.jianmu'), {
+//   recursive: true,
+//   force: true
+// })
 
-console.log(Chalk.blueBright('Transpiling ui & main...'))
+// console.log(Chalk.blueBright('Transpiling ui & main...'))
 
-Promise.allSettled([buildRenderer(), buildMain()]).then(() => {
-  console.log(
-    Chalk.greenBright(
-      'UI & main successfully transpiled! (ready to be built with electron-builder)'
-    )
-  )
-})
+// Promise.allSettled([buildRenderer(), buildMain()]).then(() => {
+//   console.log(
+//     Chalk.greenBright(
+//       'UI & main successfully transpiled! (ready to be built with electron-builder)'
+//     )
+//   )
+// })

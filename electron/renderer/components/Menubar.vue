@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import hotkeys from 'hotkeys-js'
 import { api } from 'jianmu'
+import { isDev } from 'renderer/tools'
 
 const {
   isMenuActive,
@@ -15,9 +16,12 @@ hotkeys('Ctrl+W, Command+W', (e) => {
   e.preventDefault()
   quit()
 })
-hotkeys('Ctrl+Shift+R, Command+Shift+R', forceReload)
-hotkeys('Ctrl+R, Command+R', reload)
-hotkeys('Ctrl+Shift+I, Command+Shift+I', toggleDevtools)
+
+if (isDev) {
+  hotkeys('Ctrl+Shift+R, Command+Shift+R', forceReload)
+  hotkeys('Ctrl+R, Command+R', reload)
+  hotkeys('Ctrl+Shift+I, Command+Shift+I', toggleDevtools)
+}
 
 const openPyPIWebsite = () => {
   openExternal('https://pypi.org/project/jianmu/')
@@ -35,8 +39,8 @@ const openPyPIWebsite = () => {
         </a>
       </div>
     </div>
-    <div class="menubar-menu-button">
-      <div class="menubar-menu-title">查看(V)</div>
+    <div v-if="isDev" class="menubar-menu-button">
+      <div class="menubar-menu-title">开发(D)</div>
       <div class="action-bar" :class="{ active: isMenuActive }">
         <a class="action-item" @click="reload()">
           <div class="action-label">刷新</div>

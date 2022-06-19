@@ -12,7 +12,7 @@ import { join } from 'path'
 import got from 'got'
 import { dialog } from 'electron'
 
-Menu.setApplicationMenu(null)
+// Menu.setApplicationMenu(null)
 
 let mainWindow: BrowserWindow | null
 
@@ -33,7 +33,7 @@ function createWindow() {
     const rendererPort = process.argv[2]
     mainWindow.loadURL(`http://localhost:${rendererPort}`)
   } else {
-    mainWindow.loadFile(join(app.getAppPath(), 'ui', 'index.html'))
+    mainWindow.loadFile(join(app.getAppPath(), 'renderer', 'index.html'))
   }
 }
 
@@ -74,9 +74,9 @@ ipcMain.on('close', () => {
 })
 
 ipcMain.on('toggle-devtools', () => {
-  // if (process.env.DEBUGGING) {
-  mainWindow?.webContents.toggleDevTools()
-  // }
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow?.webContents.toggleDevTools()
+  }
 })
 
 ipcMain.on('reload', () => {
