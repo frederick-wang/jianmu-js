@@ -18,4 +18,4 @@ A simple desktop app development framework combining Python, Vue.js, Element Plu
 
 This package is a part of Jianmu Framework. View Jianmu Framework on PyPI: <https://pypi.org/project/Jianmu/>.
 
-[This javascript package](https://www.npmjs.com/package/jianmu) includes API calls and CLI tools, imported by [jianmu-template](https://github.com/frederick-wang/jianmu-template). It cannot stand on its own and must rely on the Jianmu Framework to work.
+[This javascript package](https://www.npmjs.com/package/jianmu) includes API calls and CLI tools, imported by [jianmu-template](https://github.com/frederick-wang/jianmu-template). **It cannot stand on its own and must rely on the Jianmu Framework to work.**
