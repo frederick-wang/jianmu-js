@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import hotkeys from 'hotkeys-js'
 import { api } from 'jianmu'
-import { isDev } from 'renderer/tools'
+import { isDev } from '../tools'
 
 const {
   isMenuActive,

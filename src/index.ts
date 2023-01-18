@@ -1,5 +1,9 @@
 import { ElMessage } from 'element-plus'
 import * as jianmuAPI from './api'
+import { io } from 'socket.io-client'
+import { Ref, ref, watch } from 'vue'
+
+const socket = io('ws://localhost:19020')
 
 type JianmuAPI = typeof jianmuAPI
 
@@ -26,11 +30,81 @@ const invokePython = async <T = any>(command: string, ...args: any[]) => {
   return data
 }
 
+const pyfunc =
+  <T = any>(command: string) =>
+  (...args: any[]) =>
+    invokePython<T>(command, ...args)
+
+const syncStatusTable = new Map<Ref, Ref>()
+
+const pystat = (variable: Ref) => {
+  const stat = syncStatusTable.get(variable)
+  if (stat) {
+    return stat
+  }
+  throw new Error('Variable is not associated with a status ref.')
+}
+
+const pyvar = <T = any>(name: string, deep = false) => {
+  const variable = ref<T>()
+  const isSyncing = ref(false)
+  syncStatusTable.set(variable, isSyncing)
+  const eventName = `pyvar_${name}`
+  socket.on(eventName, ({ data }: { data: T }) => {
+    variable.value = data
+  })
+  socket.on(`${eventName}__synced`, () => {
+    isSyncing.value = false
+  })
+  watch(
+    variable,
+    (val) => {
+      if (!isSyncing.value) {
+        socket.emit(eventName, { data: val })
+        isSyncing.value = true
+      }
+    },
+    { deep }
+  )
+  setTimeout(() => {
+    socket.emit(`${eventName}__get`)
+  }, 0)
+  return variable
+}
+
+const pyvars = new Proxy(
+  {},
+  {
+    get: (target, name) => {
+      return pyvar(name as string)
+    }
+  }
+)
+
+const pyfuncs = new Proxy(
+  {},
+  {
+    get: (target, name) => {
+      return pyfunc(name as string)
+    }
+  }
+)
+
 /**
  * Alias for invokePython
  */
 const ipy = invokePython
 
-export { api, invokePython, ipy, JianmuAPI }
+export {
+  api,
+  invokePython,
+  ipy,
+  JianmuAPI,
+  pyfunc,
+  pyvar,
+  pyvars,
+  pyfuncs,
+  pystat
+}
 
 export default { api }
