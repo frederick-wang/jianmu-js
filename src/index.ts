@@ -30,6 +30,32 @@ const invokePython = async <T = any>(command: string, ...args: any[]) => {
   return data
 }
 
+const convert_file_object = (file: { raw: File }) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      resolve({
+        ...file,
+        raw: {
+          type: 'File',
+          data: {
+            lastModified: file.raw.lastModified.toString(),
+            name: file.raw.name,
+            base64: reader.result,
+            path: file.raw.path,
+            size: file.raw.size,
+            type: file.raw.type,
+            webkitRelativePath: file.raw.webkitRelativePath
+          }
+        }
+      })
+    }
+    reader.onerror = (error) => {
+      reject(error)
+    }
+    reader.readAsDataURL(file.raw)
+  })
+
 const pyfunc =
   <T = any>(command: string) =>
   (...args: any[]) =>
@@ -60,6 +86,20 @@ const pyvar = <T = any>(name: string, deep = false) => {
     variable,
     (val) => {
       if (!isSyncing.value) {
+        if (Array.isArray(val) && val.every((v) => v.raw instanceof File)) {
+          const lst = []
+          for (const v of val) {
+            lst.push(convert_file_object(v))
+          }
+          Promise.all(lst)
+            .then((res) => {
+              socket.emit(eventName, { data: res })
+            })
+            .finally(() => {
+              isSyncing.value = true
+            })
+          return
+        }
         socket.emit(eventName, { data: val })
         isSyncing.value = true
       }
@@ -69,6 +109,7 @@ const pyvar = <T = any>(name: string, deep = false) => {
   setTimeout(() => {
     socket.emit(`${eventName}__get`)
   }, 0)
+
   return variable
 }
 

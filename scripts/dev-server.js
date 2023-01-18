@@ -39,9 +39,16 @@ async function startFlask() {
   }
 
   const jmPath = Path.resolve(jianmuPath, 'jm.py')
+  const srcPath = Path.resolve(projectPath, 'src')
+  const PYTHONPATH = process.env.PYTHONPATH
+    ? `${srcPath}:${projectPath}:${process.env.PYTHONPATH}`
+    : projectPath
   flaskProcess = ChildProcess.spawn(pythonPath, [jmPath], {
-    cwd: projectPath,
-    env: process.env
+    cwd: srcPath,
+    env: {
+      ...process.env,
+      PYTHONPATH
+    }
   })
   flaskProcessLocker = false
 
