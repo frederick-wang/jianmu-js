@@ -37,6 +37,7 @@ async function startFlask() {
     // single instance lock
     return
   }
+  console.log(Chalk.cyanBright(`[python] `) + 'Loading...')
 
   const jmPath = Path.resolve(jianmuPath, 'jm.py')
   const srcPath = Path.resolve(projectPath, 'src')
@@ -96,7 +97,22 @@ async function startFlask() {
     }
   })
 
-  flaskProcess.on('exit', () => stop())
+  flaskProcess.on('exit', () => {
+    // 如果 Electron 还没退出且处于开发模式，就重启 Flask 服务。
+    if (isDev && electronProcess && electronProcess.exitCode === null) {
+      // Clear outputs in the console.
+      process.stdout.write('\x1Bc')
+      console.log(
+        Chalk.cyanBright(`[python] `) +
+          'Reloading failed, try to reload again after 1 seconds...'
+      )
+      setTimeout(() => {
+        restartFlask()
+      }, 1000)
+    } else {
+      stop()
+    }
+  })
 }
 
 function restartFlask() {
@@ -129,6 +145,8 @@ async function startElectron(copyStaticFiles = true) {
     electronProcessLocker = false
     return
   }
+
+  console.log(Chalk.cyanBright(`[ui] `) + 'Starting...')
 
   const args = [
     Path.resolve(__dirname, '..', '.jianmu', 'electron', 'main.js'),
@@ -179,21 +197,23 @@ function restartElectron() {
 
   if (!electronProcessLocker) {
     electronProcessLocker = true
+    // Clear outputs in the console.
+    process.stdout.write('\x1Bc')
     startElectron(false)
   }
 }
 
 function stop() {
   console.log(Chalk.redBright('Stop Jianmu Development Server...'))
-  if (isDev) {
+  if (isDev && viteServer) {
     viteServer.close()
   }
-  if (electronProcess.exitCode === null) {
+  if (electronProcess && electronProcess.exitCode === null) {
     electronProcess.removeAllListeners('exit')
     electronProcess.kill()
     electronProcess = null
   }
-  if (flaskProcess.exitCode === null) {
+  if (flaskProcess && flaskProcess.exitCode === null) {
     flaskProcess.removeAllListeners('exit')
     flaskProcess.kill()
     flaskProcess = null
@@ -221,18 +241,26 @@ async function start(_pythonPath, _jianmuPath, _projectPath, _isDev) {
     process.env.NODE_ENV = 'production'
   }
 
+  // Clear outputs in the console.
+  process.stdout.write('\x1Bc')
   printBanner()
 
   if (isDev) {
-    console.log(Chalk.greenBright('Start Jianmu Server in development mode.\n'))
+    console.log(
+      Chalk.greenBright('Start Jianmu Application in development mode.\n')
+    )
   } else {
-    console.log(Chalk.greenBright('Start Jianmu Server in production mode.'))
+    console.log(
+      Chalk.greenBright('Start Jianmu Application in production mode.')
+    )
     console.log(
       Chalk.yellowBright('[WARNING] ') +
-        'In production mode, the server will not reload on file changes.\n'
+        'In production mode, the Jianmu Application will not reload on file changes.\n'
     )
   }
-  console.log(Chalk.yellowBright('You can press Ctrl+C to stop the server.\n'))
+  console.log(
+    Chalk.yellowBright('You can press Ctrl+C to stop the Jianmu Application.\n')
+  )
 
   // 删除临时文件目录 .jianmu
   await emptyTempDir()

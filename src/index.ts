@@ -1,7 +1,8 @@
 import { ElMessage } from 'element-plus'
-import * as jianmuAPI from './api'
 import { io } from 'socket.io-client'
-import { Ref, ref, watch } from 'vue'
+import { nextTick, Ref, ref, watch } from 'vue'
+import * as jianmuAPI from './api'
+import { jsToSyncObject, syncObjectToJs } from './sync'
 
 const socket = io('ws://localhost:19020')
 
@@ -30,32 +31,6 @@ const invokePython = async <T = any>(command: string, ...args: any[]) => {
   return data
 }
 
-const convert_file_object = (file: { raw: File }) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => {
-      resolve({
-        ...file,
-        raw: {
-          type: 'File',
-          data: {
-            lastModified: file.raw.lastModified.toString(),
-            name: file.raw.name,
-            base64: reader.result,
-            path: file.raw.path,
-            size: file.raw.size,
-            type: file.raw.type,
-            webkitRelativePath: file.raw.webkitRelativePath
-          }
-        }
-      })
-    }
-    reader.onerror = (error) => {
-      reject(error)
-    }
-    reader.readAsDataURL(file.raw)
-  })
-
 const pyfunc =
   <T = any>(command: string) =>
   (...args: any[]) =>
@@ -71,13 +46,17 @@ const pystat = (variable: Ref) => {
   throw new Error('Variable is not associated with a status ref.')
 }
 
-const pyvar = <T = any>(name: string, deep = false) => {
+const pyvar = <T = any>(name: string, deep = true) => {
   const variable = ref<T>()
   const isSyncing = ref(false)
   syncStatusTable.set(variable, isSyncing)
   const eventName = `pyvar_${name}`
   socket.on(eventName, ({ data }: { data: T }) => {
-    variable.value = data
+    isSyncing.value = false
+    variable.value = syncObjectToJs(data as any) as any
+    nextTick(() => {
+      isSyncing.value = true
+    })
   })
   socket.on(`${eventName}__synced`, () => {
     isSyncing.value = false
@@ -86,22 +65,14 @@ const pyvar = <T = any>(name: string, deep = false) => {
     variable,
     (val) => {
       if (!isSyncing.value) {
-        if (Array.isArray(val) && val.every((v) => v.raw instanceof File)) {
-          const lst = []
-          for (const v of val) {
-            lst.push(convert_file_object(v))
-          }
-          Promise.all(lst)
-            .then((res) => {
-              socket.emit(eventName, { data: res })
-            })
-            .finally(() => {
-              isSyncing.value = true
-            })
-          return
+        if (val === undefined) {
+          isSyncing.value = true
+          socket.emit(eventName, { data: null })
         }
-        socket.emit(eventName, { data: val })
-        isSyncing.value = true
+        jsToSyncObject(val as any).then((data) => {
+          isSyncing.value = true
+          socket.emit(eventName, { data })
+        })
       }
     },
     { deep }
@@ -114,7 +85,9 @@ const pyvar = <T = any>(name: string, deep = false) => {
 }
 
 const pyvars = new Proxy(
-  {},
+  {} as {
+    [key: string]: Ref
+  },
   {
     get: (target, name) => {
       return pyvar(name as string)
@@ -123,7 +96,9 @@ const pyvars = new Proxy(
 )
 
 const pyfuncs = new Proxy(
-  {},
+  {} as {
+    [key: string]: (...args: any[]) => Promise<any>
+  },
   {
     get: (target, name) => {
       return pyfunc(name as string)
