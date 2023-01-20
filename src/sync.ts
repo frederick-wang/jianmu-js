@@ -47,8 +47,6 @@ type SupportJSObject = { [member: string]: SupportJSValue }
 type SupportJSArray = SupportJSValue[]
 type SupportJSValue = File | JSONValue | SupportJSObject | SupportJSArray
 
-const fileProxyToFileWeakMap = new WeakMap<File, File>()
-
 const jsToSyncObjectVersion1FileConverter = (
   file: File
 ): Promise<SyncObjectDataFile> =>
@@ -68,7 +66,7 @@ const jsToSyncObjectVersion1FileConverter = (
     reader.onerror = (error) => {
       reject(error)
     }
-    reader.readAsDataURL(fileProxyToFileWeakMap.get(file) || file)
+    reader.readAsDataURL(file)
   })
 
 const dataURItoBlob = (dataURI: string) => {
@@ -95,28 +93,31 @@ const dataURItoBlob = (dataURI: string) => {
   return blob
 }
 
+// create a new class extends File to add path property and webkitRelativePath property
+class JMFile extends File {
+  path: string
+  webkitRelativePath: string
+  constructor(
+    fileBits: BlobPart[],
+    fileName: string,
+    options: FilePropertyBag & { path: string; webkitRelativePath: string }
+  ) {
+    super(fileBits, fileName, options)
+    this.path = options.path
+    this.webkitRelativePath = options.webkitRelativePath
+  }
+}
+
 const syncObjectToJsVersion1FileConverter = (obj: SyncObjectDataFile): File => {
   // obj.base64Src is a string like "data:application/pdf;base64,...".
   // We convert base64Src to Blob and then convert Blob to File.
   const blob = dataURItoBlob(obj.base64Src)
-  const file = new File([blob], obj.name, {
+  return new JMFile([blob], obj.name, {
     lastModified: obj.lastModified,
-    type: obj.type
+    type: obj.type,
+    path: obj.path,
+    webkitRelativePath: obj.webkitRelativePath
   })
-  // return a proxy of file to add path and webkitRelativePath
-  const fileProxy = new Proxy(file, {
-    get: (target, name) => {
-      if (name === 'path') {
-        return obj.path
-      }
-      if (name === 'webkitRelativePath') {
-        return obj.webkitRelativePath
-      }
-      return (target as any)[name]
-    }
-  })
-  fileProxyToFileWeakMap.set(fileProxy, file)
-  return fileProxy
 }
 
 const jsToSyncObjectVersion1 = async (
