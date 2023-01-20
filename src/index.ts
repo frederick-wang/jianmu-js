@@ -1,6 +1,7 @@
 import * as jianmuAPI from './api'
 import { invokePython, pyfunc, pyfuncs } from './pyfunc'
-import { pystat, pyvar, pyvars } from './pyvar'
+import { pyvar, pyvars } from './pyvar'
+import { pystat } from './pystat'
 
 type JianmuAPI = typeof jianmuAPI
 

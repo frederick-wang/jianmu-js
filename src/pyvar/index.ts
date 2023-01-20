@@ -1,53 +1,51 @@
 import { io } from 'socket.io-client'
 import { nextTick, Ref, ref, watch } from 'vue'
 import { jsToSyncObject, syncObjectToJs } from '../sync'
+import { initStatus } from '../pystat'
 
 const socket = io('ws://localhost:19020')
 
-const syncStatusTable = new Map<Ref, Ref>()
-
-const pystat = (variable: Ref) => {
-  const stat = syncStatusTable.get(variable)
-  if (stat) {
-    return stat
-  }
-  throw new Error('Variable is not associated with a status ref.')
-}
-
 const pyvar = <T = any>(name: string, deep = true) => {
   const variable = ref<T>()
-  const isSyncing = ref(false)
-  syncStatusTable.set(variable, isSyncing)
   const eventName = `pyvar_${name}`
-  socket.on(eventName, ({ data }: { data: T }) => {
-    isSyncing.value = false
+  const GET_PY_VALUE = `${eventName}__get_py_value`
+  const PUSH_PY_TO_JS = `${eventName}__push_py_to_js`
+  const PUSH_JS_TO_PY = `${eventName}__push_js_to_py`
+  const PY_SYNCED_WITH_JS = `${eventName}__py_synced_with_js`
+  const JS_SYNCED_WITH_PY = `${eventName}__js_synced_with_py`
+
+  const { isSynced, setSyncStatusToSynced, setSyncStatusToSyncing } =
+    initStatus(variable)
+
+  const syncJsWithPy = ({ data }: { data: T }) => {
+    setSyncStatusToSyncing()
     variable.value = syncObjectToJs(data as any) as any
     nextTick(() => {
-      isSyncing.value = true
+      setSyncStatusToSynced()
+      socket.emit(JS_SYNCED_WITH_PY)
     })
-  })
-  socket.on(`${eventName}__synced`, () => {
-    isSyncing.value = false
-  })
-  watch(
-    variable,
-    (val) => {
-      if (!isSyncing.value) {
-        if (val === undefined) {
-          isSyncing.value = true
-          socket.emit(eventName, { data: null })
-        }
-        jsToSyncObject(val as any).then((data) => {
-          isSyncing.value = true
-          socket.emit(eventName, { data })
-        })
+  }
+
+  const push_js_to_py = () => {
+    if (isSynced.value) {
+      if (variable.value === undefined) {
+        setSyncStatusToSyncing()
+        socket.emit(PUSH_JS_TO_PY, { data: null })
+        return
       }
-    },
-    { deep }
-  )
-  setTimeout(() => {
-    socket.emit(`${eventName}__get`)
-  }, 0)
+      jsToSyncObject(variable.value as any).then((data) => {
+        setSyncStatusToSyncing()
+        socket.emit(PUSH_JS_TO_PY, { data })
+      })
+    }
+  }
+
+  socket.on(PUSH_PY_TO_JS, syncJsWithPy)
+  socket.on(PY_SYNCED_WITH_JS, setSyncStatusToSynced)
+
+  watch(variable, push_js_to_py, { deep })
+
+  socket.emit(GET_PY_VALUE)
 
   return variable
 }
@@ -63,4 +61,4 @@ const pyvars = new Proxy(
   }
 )
 
-export { pystat, pyvar, pyvars }
+export { pyvar, pyvars }
