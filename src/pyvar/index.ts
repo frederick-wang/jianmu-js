@@ -5,6 +5,10 @@ import { initStatus } from '../pystat'
 
 const socket = io('ws://localhost:19020')
 
+socket.on('Action:show-save-dialog', (arg, callback) => {
+  window.api.showSaveDialog(arg).then(callback)
+})
+
 const pyvar = <T = any>(name: string, deep = true) => {
   const variable = ref<T>()
   const eventName = `pyvar_${name}`
