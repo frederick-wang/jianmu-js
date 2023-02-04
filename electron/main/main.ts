@@ -3,6 +3,7 @@ import {
   BrowserWindow,
   ipcMain,
   Menu,
+  MessageBoxOptions,
   OpenDialogOptions,
   OpenExternalOptions,
   SaveDialogOptions,
@@ -11,6 +12,7 @@ import {
 import { join } from 'path'
 import got from 'got'
 import { dialog } from 'electron'
+import os from 'os'
 
 // Menu.setApplicationMenu(null)
 
@@ -125,8 +127,46 @@ ipcMain.handle('show-save-dialog', (_, options: SaveDialogOptions) => {
   }
 })
 
+ipcMain.handle('show-message-box', (_, options: MessageBoxOptions) => {
+  if (mainWindow) {
+    return dialog.showMessageBox(mainWindow, options)
+  }
+})
+
+ipcMain.handle('show-error-box', (_, title: string, content: string) => {
+  if (mainWindow) {
+    return dialog.showErrorBox(title, content)
+  }
+})
+
+ipcMain.handle('show-item-in-folder', (_, fullPath: string) =>
+  shell.showItemInFolder(fullPath)
+)
+
+ipcMain.handle('open-path', (_, path: string) => shell.openPath(path))
+
 ipcMain.handle(
   'open-external',
   (_, url: string, options?: OpenExternalOptions) =>
     shell.openExternal(url, options)
 )
+
+ipcMain.handle('trash-item', (_, path: string) => shell.trashItem(path))
+
+ipcMain.handle('beep', () => shell.beep())
+
+ipcMain.handle('platform', () => os.platform())
+
+ipcMain.handle('check-heartbeat', async () => {
+  try {
+    const res = await got.get(
+      'http://localhost:19020/__jianmu_api__/heartbeat',
+      {
+        timeout: 1000
+      }
+    )
+    return res.statusCode === 200
+  } catch {
+    return false
+  }
+})

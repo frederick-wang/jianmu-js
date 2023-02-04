@@ -98,17 +98,28 @@ async function startFlask() {
   })
 
   flaskProcess.on('exit', () => {
-    // 如果 Electron 还没退出且处于开发模式，就重启 Flask 服务。
     if (isDev && electronProcess && electronProcess.exitCode === null) {
+      // 如果 Electron 还没退出且处于开发模式，就重启 Flask 服务。
       // Clear outputs in the console.
-      process.stdout.write('\x1Bc')
+      // process.stdout.write('\x1Bc')
+      // console.log(
+      //   Chalk.cyanBright(`[python] `) +
+      //     'Reloading failed, try to reload again after 1 seconds...'
+      // )
+      // setTimeout(() => {
+      //   restartFlask()
+      // }, 1000)
+      /**
+       * NOTE: 根据反馈，这个自动重启 Flask 服务的功能有两个问题：
+       * ① 会导致报错信息丢失，因为重启之后，之前的报错信息就没了。
+       * ② 会让用户在一些情况下感到困惑，比如检测到目录下文件变动后，Flask服务重启了，然后就和未重启的 Electron 断开链接了
+       * 因此目前先注释掉这个功能，后续再考虑是否要加回来。
+       */
       console.log(
         Chalk.cyanBright(`[python] `) +
-          'Reloading failed, try to reload again after 1 seconds...'
+          'The python process has exited unexpectedly, so the total program will exit now.'
       )
-      setTimeout(() => {
-        restartFlask()
-      }, 1000)
+      stop()
     } else {
       stop()
     }
@@ -167,6 +178,9 @@ async function startElectron(copyStaticFiles = true) {
       if (!msg.trim()) {
         continue
       }
+      if (msg.match(/Electron\[\d+:\d+\]\s/)) {
+        continue
+      }
       process.stdout.write(prefix + msg)
     }
   })
@@ -179,6 +193,9 @@ async function startElectron(copyStaticFiles = true) {
         continue
       }
       if (!msg.trim()) {
+        continue
+      }
+      if (msg.match(/Electron\[\d+:\d+\]\s/)) {
         continue
       }
       process.stderr.write(prefix + msg)
@@ -277,21 +294,27 @@ async function start(_pythonPath, _jianmuPath, _projectPath, _isDev) {
   // 启动 Flask 服务
   startFlask(pythonPath, jianmuPath, projectPath)
 
+  /**
+   * NOTE: 根据反馈，这个自动重启 Flask 服务的功能有两个问题：
+   * ① 会导致报错信息丢失，因为重启之后，之前的报错信息就没了。
+   * ② 会让用户在一些情况下感到困惑，比如检测到目录下文件变动后，Flask服务重启了，然后就和未重启的 Electron 断开链接了
+   * 因此目前先注释掉这个功能，后续再考虑是否要加回来。
+   */
   // 如果是 development 模式，侦听文件变化并重启 Flask 服务
-  if (isDev) {
-    const pythonSrcPath = Path.resolve(projectPath, 'src')
-    Chokidar.watch(pythonSrcPath, {
-      cwd: pythonSrcPath
-    }).on('change', (path) => {
-      if (path.endsWith('.pyc') || path.endsWith('.tmp')) {
-        return
-      }
-      console.log(
-        Chalk.cyanBright(`[python] `) + `Change in ${path}. reloading...`
-      )
-      restartFlask()
-    })
-  }
+  // if (isDev) {
+  //   const pythonSrcPath = Path.resolve(projectPath, 'src')
+  //   Chokidar.watch(pythonSrcPath, {
+  //     cwd: pythonSrcPath
+  //   }).on('change', (path) => {
+  //     if (path.endsWith('.pyc') || path.endsWith('.tmp')) {
+  //       return
+  //     }
+  //     console.log(
+  //       Chalk.cyanBright(`[python] `) + `Change in ${path}. reloading...`
+  //     )
+  //     restartFlask()
+  //   })
+  // }
 
   // 编译 Electron Main 进程文件，并启动 Electron
   startElectron()

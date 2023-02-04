@@ -1,5 +1,6 @@
 const Path = require('path')
 const Vite = require('vite')
+const fs = require('fs')
 
 /**
  * @param {string} projectPath
@@ -36,6 +37,17 @@ async function getRendererServer(projectPath) {
     main: mainPath
   }
   const viteEntryPath = Path.join(rendererPath, 'index.html')
+  /**
+   * 根据测试，对 optimizeDeps.force 的设置无效。
+   * 但如果让 vite 缓存 deps，会出现 bug，如 Action 无法调用
+   * 因此，需要手动删除 node_modules/.vite/deps
+   */
+  // get the path of node_modules/.vite/deps
+  const viteDepsPath = Path.join(jianmuJSPath, 'node_modules', '.vite', 'deps')
+  // delete the path of node_modules/.vite/deps
+  if (fs.existsSync(viteDepsPath)) {
+    fs.rmSync(viteDepsPath, { recursive: true })
+  }
   const viteServer = await Vite.createServer({
     ...viteConfig,
     publicDir: Path.join(uiPath, 'public'),

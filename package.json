@@ -1,6 +1,6 @@
 {
   "name": "jianmu",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A node.js package for Jianmu Framework, includeing API calls and CLI tools.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -55,6 +55,7 @@
     "vue-eslint-parser": "^9.0.2"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
@@ -68,7 +69,7 @@
     "del": "^6.1.1",
     "electron": "^22.0.2",
     "electron-builder": "^23.0.3",
-    "element-plus": "^2.2.26",
+    "element-plus": "^2.2.29",
     "got": "^11.8.5",
     "hotkeys-js": "^3.9.4",
     "install": "^0.13.0",

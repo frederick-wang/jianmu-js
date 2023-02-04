@@ -19,12 +19,16 @@ const App = (await import('project/App.vue')).default
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
     'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   overflow: auto;
+  height: calc(100% - var(--jm-titlebar-height));
+  position: relative;
+  display: flex;
+  flex-direction: column;
 
-  :deep(.el-scrollbar__bar.is-horizontal) {
+  .el-scrollbar__bar.is-horizontal {
     height: 6px;
   }
 
-  :deep(.el-scrollbar__bar.is-vertical) {
+  .el-scrollbar__bar.is-vertical {
     width: 6px;
   }
 }

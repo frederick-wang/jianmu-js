@@ -36,7 +36,7 @@ const { minimize, toggleMaximize, close, isMaximized } = api
   background-color: rgb(229, 229, 229);
   color: rgba(51, 51, 51);
   width: 100%;
-  height: 30px;
+  height: var(--jm-titlebar-height);
 
   &.inactive {
     color: rgba(51, 51, 51, 0.6);
@@ -47,7 +47,7 @@ const { minimize, toggleMaximize, close, isMaximized } = api
     height: 100%;
     width: 100%;
     padding: 0;
-    line-height: 30px;
+    line-height: var(--jm-titlebar-height);
     justify-content: left;
     display: flex;
     user-select: none;
@@ -105,7 +105,7 @@ const { minimize, toggleMaximize, close, isMaximized } = api
 
       .window-icon {
         display: inline-block;
-        line-height: 30px;
+        line-height: var(--jm-titlebar-height);
         height: 100%;
         width: 46px;
         display: flex;

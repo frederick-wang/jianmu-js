@@ -22,10 +22,15 @@ const invokePython = async <T = any>(command: string, ...args: any[]) => {
   return data
 }
 
-const pyfunc =
-  <T = any>(command: string) =>
-  (...args: any[]) =>
-    invokePython<T>(command, ...args)
+const pyfuncCache = new Map<string, (...args: any[]) => Promise<any>>()
+
+const pyfunc = <T = any>(command: string) => {
+  if (!pyfuncCache.has(command)) {
+    const func = (...args: any[]) => invokePython<T>(command, ...args)
+    pyfuncCache.set(command, func)
+  }
+  return pyfuncCache.get(command) as (...args: any[]) => Promise<T>
+}
 
 const pyfuncs = new Proxy(
   {} as {
