@@ -9,8 +9,18 @@ const {
   forceReload,
   quit,
   requestPython,
+  os,
+  checkHeartbeat,
+  // dialog
   showOpenDialog,
-  showSaveDialog
+  showSaveDialog,
+  showMessageBox,
+  showErrorBox,
+  // shell
+  showItemInFolder,
+  openPath,
+  trashItem,
+  beep
 } = window.api
 
 /**
@@ -35,7 +45,17 @@ export {
   reload,
   forceReload,
   quit,
+  os,
+  checkHeartbeat,
+  // dialog
   showOpenDialog,
   showSaveDialog,
-  openExternal
+  showMessageBox,
+  showErrorBox,
+  // shell
+  showItemInFolder,
+  openPath,
+  openExternal,
+  trashItem,
+  beep
 }

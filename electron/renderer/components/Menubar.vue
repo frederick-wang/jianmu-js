@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import hotkeys from 'hotkeys-js'
 import { api } from 'jianmu'
-import { isDev } from 'renderer/tools'
+import { ref } from 'vue'
+import { isDev } from '../tools'
 
 const {
   isMenuActive,
@@ -9,8 +10,12 @@ const {
   toggleDevtools,
   reload,
   quit,
-  openExternal
+  openExternal,
+  os
 } = api
+
+const isMac = ref(false)
+os.platform().then((platform) => (isMac.value = platform === 'darwin'))
 
 hotkeys('Ctrl+W, Command+W', (e) => {
   e.preventDefault()
@@ -20,7 +25,7 @@ hotkeys('Ctrl+W, Command+W', (e) => {
 if (isDev) {
   hotkeys('Ctrl+Shift+R, Command+Shift+R', forceReload)
   hotkeys('Ctrl+R, Command+R', reload)
-  hotkeys('Ctrl+Shift+I, Command+Shift+I', toggleDevtools)
+  hotkeys('Ctrl+Shift+I, Command+Option+I', toggleDevtools)
 }
 
 const openPyPIWebsite = () => {
@@ -35,7 +40,7 @@ const openPyPIWebsite = () => {
       <div class="action-bar" :class="{ active: isMenuActive }">
         <a class="action-item" @click="quit()">
           <div class="action-label">退出</div>
-          <div class="keybinding">Ctrl+W</div>
+          <div class="keybinding">{{ isMac ? 'Command+W' : 'Ctrl+W' }}</div>
         </a>
       </div>
     </div>
@@ -44,15 +49,19 @@ const openPyPIWebsite = () => {
       <div class="action-bar" :class="{ active: isMenuActive }">
         <a class="action-item" @click="reload()">
           <div class="action-label">刷新</div>
-          <div class="keybinding">Ctrl+R</div>
+          <div class="keybinding">{{ isMac ? 'Command+R' : 'Ctrl+R' }}</div>
         </a>
         <a class="action-item" @click="forceReload()">
           <div class="action-label">强制刷新</div>
-          <div class="keybinding">Ctrl+Shift+R</div>
+          <div class="keybinding">
+            {{ isMac ? 'Command+Shift+R' : 'Ctrl+Shift+R' }}
+          </div>
         </a>
         <a class="action-item" @click="toggleDevtools()">
           <div class="action-label">开发者工具</div>
-          <div class="keybinding">Ctrl+Shift+I</div>
+          <div class="keybinding">
+            {{ isMac ? 'Command+Option+I' : 'Ctrl+Shift+I' }}
+          </div>
         </a>
       </div>
     </div>

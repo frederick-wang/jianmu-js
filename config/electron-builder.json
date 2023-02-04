@@ -1,8 +1,5 @@
 {
   "appId": "com.electron.app",
-  "directories": {
-    "output": "dist"
-  },
   "nsis": {
     "oneClick": false,
     "perMachine": false,
@@ -16,27 +13,10 @@
     "target": ["snap"]
   },
   "files": [
-    ".jianmu/electron/**/*",
-    {
-      "from": ".jianmu/ui",
-      "to": "ui",
-      "filter": ["**/*"]
-    },
-    {
-      "from": "scripts/electron/static",
-      "to": "static",
-      "filter": ["**/*"]
-    },
+    "**/*",
     "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
     "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
     "!**/node_modules/*.d.ts",
-    "!**/node_modules/.bin",
-    "!src",
-    "!config",
-    "!README.md",
-    "!scripts",
-    "!.jianmu/ui",
-    "!dist",
-    "!ui"
+    "!**/node_modules/.bin"
   ]
 }
