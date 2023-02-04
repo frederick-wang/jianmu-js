@@ -40,18 +40,10 @@ const pyvar = <T = any>(name: string, deep = true) => {
       })
     }
 
-    const push_js_to_py = () => {
+    const pushJsToPy = () => {
       if (!socket) {
         throw new Error('Socket is not initialized!')
       }
-      console.log(
-        name,
-        'push_js_to_py',
-        'isSynced.value:',
-        isSynced.value,
-        'variable.value:',
-        variable.value
-      )
       if (isSynced.value) {
         if (variable.value === undefined) {
           setSyncStatusToSyncing()
@@ -78,7 +70,7 @@ const pyvar = <T = any>(name: string, deep = true) => {
        * 不必担心内存泄露，因为所有 Python 中的响应式变量都是单例的，不会被重复创建。
        * @see https://cn.vuejs.org/guide/essentials/watchers.html#stopping-a-watcher
        */
-      watch(variable, push_js_to_py, { deep })
+      watch(variable, pushJsToPy, { deep })
     }, 0)
 
     socket.emit(GET_PY_VALUE)
