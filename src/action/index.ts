@@ -28,20 +28,14 @@ const initActionSocket = (s: Socket) => {
   socket.on(
     'Action:show-error-box',
     ({ args: [title, content] }: { args: [string, string] }, callback) => {
-      /**
-       * NOTE: 对于 Promise<void>，会返回一个为 undefined 的参数，但还是有一个参数。
-       * 所以要将其屏蔽掉。
-       *
-       * —— Wang Zhaoji 2023-02-04
-       */
-      window.api.showErrorBox(title, content).then(() => callback())
+      window.api.showErrorBox(title, content).then(callback)
     }
   )
 
   socket.on(
     'Action:show-item-in-folder',
     ({ args: [fullPath] }: { args: [string] }, callback) => {
-      window.api.showItemInFolder(fullPath).then(() => callback())
+      window.api.showItemInFolder(fullPath).then(callback)
     }
   )
 
@@ -60,19 +54,19 @@ const initActionSocket = (s: Socket) => {
       }: { args: [string, Electron.OpenExternalOptions] },
       callback
     ) => {
-      window.api.openExternal(url, options).then(() => callback())
+      window.api.openExternal(url, options).then(callback)
     }
   )
 
   socket.on(
     'Action:trash-item',
     ({ args: [path] }: { args: [string] }, callback) => {
-      window.api.trashItem(path).then(() => callback())
+      window.api.trashItem(path).then(callback)
     }
   )
 
   socket.on('Action:beep', (_: { args: [] }, callback) => {
-    window.api.beep().then(() => callback())
+    window.api.beep().then(callback)
   })
 }
 
