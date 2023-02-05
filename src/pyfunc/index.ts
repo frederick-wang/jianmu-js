@@ -32,15 +32,24 @@ const pyfunc = <T = any>(command: string) => {
   return pyfuncCache.get(command) as (...args: any[]) => Promise<T>
 }
 
-const pyfuncs = new Proxy(
-  {} as {
-    [key: string]: (...args: any[]) => Promise<any>
-  },
-  {
-    get: (target, name) => {
-      return pyfunc(name as string)
-    }
-  }
-)
+type PyfuncsType = Record<string, (...args: any[]) => Promise<any>> &
+  ((moduleName?: string) => PyfuncsType)
 
-export { invokePython, pyfunc, pyfuncs }
+const genGetHandler =
+  (moduleName: string) => (target: PyfuncsType, name: string | symbol) => {
+    if (typeof name !== 'string') {
+      throw new Error('The name of python variable should be a string!')
+    }
+    return pyfunc(`${moduleName}.${name}`)
+  }
+
+const rawPyfuncs = (moduleName = 'app') =>
+  new Proxy(rawPyfuncs as PyfuncsType, {
+    get: genGetHandler(moduleName)
+  })
+
+const pyfuncs = new Proxy(rawPyfuncs as PyfuncsType, {
+  get: genGetHandler('app')
+})
+
+export { pyfunc, pyfuncs }

@@ -79,15 +79,24 @@ const pyvar = <T = any>(name: string, deep = true) => {
   return variableCache.get(name) as Ref<T>
 }
 
-const pyvars = new Proxy(
-  {} as {
-    [key: string]: Ref
-  },
-  {
-    get: (target, name) => {
-      return pyvar(name as string)
+type PyvarsType = Record<string, Ref<any>> &
+  ((moduleName?: string) => PyvarsType)
+
+const genGetHandler =
+  (moduleName: string) => (target: PyvarsType, name: string | symbol) => {
+    if (typeof name !== 'string') {
+      throw new Error('The name of python variable should be a string!')
     }
+    return pyvar(`${moduleName}.${name}`)
   }
-)
+
+const rawPyvars = (moduleName = 'app') =>
+  new Proxy(rawPyvars as PyvarsType, {
+    get: genGetHandler(moduleName)
+  })
+
+const pyvars = new Proxy(rawPyvars as PyvarsType, {
+  get: genGetHandler('app')
+})
 
 export { pyvar, pyvars, initPyvarSocket }
