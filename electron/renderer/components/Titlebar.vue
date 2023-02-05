@@ -37,6 +37,7 @@ const { minimize, toggleMaximize, close, isMaximized } = api
   color: rgba(51, 51, 51);
   width: 100%;
   height: var(--jm-titlebar-height);
+  font-size: 13px;
 
   &.inactive {
     color: rgba(51, 51, 51, 0.6);

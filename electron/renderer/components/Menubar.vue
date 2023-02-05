@@ -90,6 +90,7 @@ const openPyPIWebsite = () => {
   box-sizing: border-box;
   height: 30px;
   flex-wrap: wrap;
+  font-size: 13px;
 
   .menubar-menu-button {
     color: #333333;
