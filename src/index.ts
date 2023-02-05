@@ -1,8 +1,8 @@
-import * as jianmuAPI from './api'
-import { invokePython, pyfunc, pyfuncs } from './pyfunc'
-import { pystat } from './pystat'
-import { pyvar, pyvars, initPyvarSocket } from './pyvar'
 import { initActionSocket } from './action'
+import * as jianmuAPI from './api'
+import { pyfunc, pyfuncs } from './pyfunc'
+import { pystat } from './pystat'
+import { initPyvarSocket, pyvar, pyvars } from './pyvar'
 import { getSocket } from './sock'
 
 /**
@@ -21,27 +21,10 @@ type JianmuAPI = typeof jianmuAPI
 
 const api: JianmuAPI = jianmuAPI
 
-/**
- * Alias for invokePython
- */
-const ipy = invokePython
-
-export {
-  api,
-  invokePython,
-  ipy,
-  JianmuAPI,
-  pyfunc,
-  pyvar,
-  pyvars,
-  pyfuncs,
-  pystat
-}
+export { api, JianmuAPI, pyfunc, pyvar, pyvars, pyfuncs, pystat }
 
 export default {
   api,
-  invokePython,
-  ipy,
   pyfunc,
   pyvar,
   pyvars,
