@@ -178,9 +178,6 @@ async function startElectron(copyStaticFiles = true) {
       if (!msg.trim()) {
         continue
       }
-      if (msg.match(/Electron\[\d+:\d+\]\s/)) {
-        continue
-      }
       process.stdout.write(prefix + msg)
     }
   })
@@ -196,6 +193,9 @@ async function startElectron(copyStaticFiles = true) {
         continue
       }
       if (msg.match(/Electron\[\d+:\d+\]\s/)) {
+        continue
+      }
+      if (msg.match(/Electron Helper \(Renderer\)\[\d+:\d+\]\s/)) {
         continue
       }
       process.stderr.write(prefix + msg)
