@@ -2,9 +2,9 @@ const Path = require('path')
 const FileSystem = require('fs')
 const ChildProcess = require('child_process')
 const Chalk = require('chalk')
-const builder = require('electron-builder')
-const { Platform } = builder
-const config = require('../config/electron-builder.json')
+// const builder = require('electron-builder')
+// const { Platform } = builder
+// const config = require('../config/electron-builder.json')
 const packageJSON = {
   name: 'jianmu-template',
   version: '0.0.2',
@@ -65,16 +65,16 @@ async function build(_pythonPath, _jianmuPath, _projectPath) {
       }
       console.log(stdout)
       console.log(stderr)
-      await builder.build({
-        config: {
-          ...config,
-          electronVersion: '19.0.3',
-          directories: {
-            output: Path.resolve(_projectPath, 'dist'),
-            app: Path.resolve(__dirname, '..', '.jianmu', 'electron')
-          }
-        }
-      })
+      // await builder.build({
+      //   config: {
+      //     ...config,
+      //     electronVersion: '19.0.3',
+      //     directories: {
+      //       output: Path.resolve(_projectPath, 'dist'),
+      //       app: Path.resolve(__dirname, '..', '.jianmu', 'electron')
+      //     }
+      //   }
+      // })
       console.log(Chalk.greenBright('Jianmu Application successfully built!'))
     }
   )
