@@ -34,7 +34,7 @@ heartbeat()
 </template>
 
 <style lang="scss">
-@import './global.scss';
+@import './styles/global.scss';
 
 .jianmu-main-view {
   display: flex;

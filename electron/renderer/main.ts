@@ -1,8 +1,10 @@
-import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import JianmuApp from './JianmuApp.vue'
+import { createApp } from 'vue'
 import FontAwesomeIcon from './FontAwesomeIcon'
+import JianmuApp from './JianmuApp.vue'
+import './styles/tailwind.css'
+// Element-UI 的样式必须在 Tailwind 的样式之后引入，否则会被覆盖
+import 'element-plus/dist/index.css'
 
 const jianmuApp = createApp(JianmuApp)
 jianmuApp.component('FontAwesomeIcon', FontAwesomeIcon)

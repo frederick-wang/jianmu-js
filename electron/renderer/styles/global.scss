@@ -1,0 +1,60 @@
+:root {
+  --jm-titlebar-height: 30px;
+
+  --text-color: var(--el-text-color-primary);
+  --text-color-light: var(--el-text-color-regular);
+  --text-color-lighter: var(--el-text-color-secondary);
+  --brand-color: var(--el-color-primary);
+  --brand-color-light: var(--el-color-primary-light-3);
+  --bg-brand-color: var(--el-color-primary-light-9);
+  --bg-color: var(--el-bg-color);
+  --bg-color-rgb: 255, 255, 255;
+  --bg-color-soft: #fafafa;
+  --bg-color-mute: #f2f2f2;
+  --border-color: var(--el-border-color);
+  --border-color-light: var(--el-border-color-lighter);
+  --font-family: var(--el-font-family);
+  --font-family-mono: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas,
+    'Courier New', monospace;
+  --code-line-height: 1.4;
+  --code-font-size: var(--el-font-size-base);
+  --code-bg-color: var(--el-fill-color-light);
+  --code-text-color: var(--el-color-primary);
+  --code-font-family: var(--font-family-mono);
+  --code-tooltip-bg-color: var(--code-bg-color);
+  --code-tooltip-color: #0c61c9;
+  --block-tip-bg-color: rgba(var(--el-color-primary-rgb), 0.1);
+  --block-warning-bg-color: rgba(var(--el-color-danger-rgb), 0.1);
+  --link-active-bg-color: rgba(var(--el-color-primary-rgb), 0.1);
+}
+
+#jianmu-app {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+
+  code {
+    margin: 0;
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    color: var(--code-text-color);
+    font-weight: normal;
+    line-height: var(--code-line-height);
+    background-color: var(--code-bg-color);
+  }
+}
+
+html {
+  font-size: 16px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+  direction: ltr;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  transition: background-color var(--el-transition-duration-fast);
+}

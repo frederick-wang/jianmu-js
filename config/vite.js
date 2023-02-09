@@ -15,6 +15,11 @@ const getViteConfig = (projectPath) => {
   const jianmuJSPath = Path.join(__dirname, '..')
   const outDir = Path.join(jianmuJSPath, '.jianmu', 'electron', 'renderer')
   const rendererPath = Path.join(jianmuJSPath, 'electron', 'renderer')
+
+  const tailwindcssConfig = require(Path.join(
+    projectPath,
+    'tailwind.config.js'
+  ))
   /**
    * https://vitejs.dev/config
    */
@@ -37,7 +42,16 @@ const getViteConfig = (projectPath) => {
           }
         }
       })
-    ]
+    ],
+    css: {
+      postcss: {
+        plugins: [
+          require('postcss-import'),
+          require('tailwindcss')(tailwindcssConfig),
+          require('autoprefixer')
+        ]
+      }
+    }
   })
   return config
 }
