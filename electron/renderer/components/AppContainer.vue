@@ -4,11 +4,9 @@ const App = (await import('project/App.vue')).default
 
 <template>
   <div class="app-container">
-    <el-scrollbar>
-      <Suspense>
-        <App />
-      </Suspense>
-    </el-scrollbar>
+    <Suspense>
+      <App />
+    </Suspense>
   </div>
 </template>
 
